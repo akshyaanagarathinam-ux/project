@@ -1,0 +1,268 @@
+Got it — you want **simpler code (easy to write + explain in exam)** but **without losing outputs/plots/metrics**. I’ll clean each section so it’s short, readable, and still gives full results.
+
+---
+
+# ✅ 1. PREPROCESSING (Simple + Complete)
+
+```python
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler, Normalizer, Binarizer, StandardScaler
+
+# Load data
+df = pd.read_csv("pima-indians-diabetes.csv")
+X = df.values
+
+# 1. Scaling
+scaler = MinMaxScaler()
+scaled = scaler.fit_transform(X)
+print("Scaled Data:\n", scaled[:5])
+
+# 2. Normalization
+norm = Normalizer()
+normalized = norm.fit_transform(X)
+print("\nNormalized Data:\n", normalized[:5])
+
+# 3. Binarization
+binarizer = Binarizer(threshold=0.5)
+binary = binarizer.fit_transform(X)
+print("\nBinarized Data:\n", binary[:5])
+
+# 4. Standardization
+std = StandardScaler()
+standard = std.fit_transform(X)
+print("\nStandardized Data:\n", standard[:5])
+```
+
+---
+
+# ✅ 2. LINEAR REGRESSION (Simple + Train/Test Graph)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# Data
+x = np.random.rand(100,1)
+y = 4 + 3*x + np.random.randn(100,1)
+
+# Split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2)
+
+# Model
+model = LinearRegression()
+model.fit(x_train,y_train)
+
+# Predictions
+y_train_pred = model.predict(x_train)
+y_test_pred = model.predict(x_test)
+
+# Train Graph
+plt.scatter(x_train,y_train)
+plt.plot(x_train,y_train_pred)
+plt.title("Train Data")
+plt.show()
+
+# Test Graph
+plt.scatter(x_test,y_test)
+plt.plot(x_train,y_train_pred)
+plt.title("Test Data")
+plt.show()
+
+print("Slope:", model.coef_)
+print("Intercept:", model.intercept_)
+```
+
+---
+
+# ✅ 3. LINEAR REGRESSION (User Defined - Simplified)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.random.rand(100)
+y = 4 + 3*x + np.random.randn(100)
+
+# Formula
+b1 = np.sum((x-x.mean())*(y-y.mean())) / np.sum((x-x.mean())**2)
+b0 = y.mean() - b1*x.mean()
+
+y_pred = b0 + b1*x
+
+plt.scatter(x,y)
+plt.plot(x,y_pred)
+plt.title("Regression Line")
+plt.show()
+
+print("Slope:", b1)
+print("Intercept:", b0)
+```
+
+---
+
+# ✅ 4. LOGISTIC REGRESSION (Simple + Graph)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+# Data
+x = np.random.rand(100,1)
+y = (x > 0.5).astype(int).ravel()
+
+# Split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2)
+
+# Model
+model = LogisticRegression()
+model.fit(x_train,y_train)
+
+# Predictions
+y_pred = model.predict(x_test)
+
+# Plot
+plt.scatter(x_test,y_test,label="Actual")
+plt.scatter(x_test,y_pred,label="Predicted")
+plt.legend()
+plt.show()
+
+# Sigmoid curve
+x_line = np.linspace(0,1,100).reshape(-1,1)
+y_line = model.predict_proba(x_line)[:,1]
+
+plt.plot(x_line,y_line)
+plt.title("Sigmoid Curve")
+plt.show()
+
+print("Coefficient:", model.coef_)
+print("Intercept:", model.intercept_)
+```
+
+---
+
+# ✅ 5. LOGISTIC REGRESSION (User Defined – Short)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.random.rand(100)
+y = (x > 0.5).astype(int)
+
+def sigmoid(z):
+    return 1/(1+np.exp(-z))
+
+b0,b1 = 0,0
+lr = 0.1
+
+for _ in range(500):
+    y_pred = sigmoid(b0 + b1*x)
+    b0 -= lr*(y_pred-y).mean()
+    b1 -= lr*((y_pred-y)*x).mean()
+
+y_class = (sigmoid(b0+b1*x) > 0.5).astype(int)
+
+plt.scatter(x,y,label="Actual")
+plt.scatter(x,y_class,label="Predicted")
+plt.legend()
+plt.show()
+
+print("b0:", b0, "b1:", b1)
+```
+
+---
+
+# ✅ 6. KNN (Simplified)
+
+```python
+from sklearn.datasets import load_iris
+from sklearn.neighbors import KNeighborsClassifier
+
+data = load_iris()
+X = data.data[:,:2]
+y = data.target
+
+model = KNeighborsClassifier(n_neighbors=3)
+model.fit(X,y)
+
+pred = model.predict([[5,3]])
+
+print("Predicted Class:", pred[0])
+```
+
+---
+
+# ✅ 7. NAIVE BAYES (Clean + Full Output)
+
+```python
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report
+
+data = load_iris()
+X = data.data
+y = data.target
+
+x_train,x_test,y_train,y_test = train_test_split(X,y,test_size=0.3)
+
+model = GaussianNB()
+model.fit(x_train,y_train)
+
+y_pred = model.predict(x_test)
+
+print("Accuracy:", accuracy_score(y_test,y_pred))
+print("\nReport:\n", classification_report(y_test,y_pred))
+```
+
+---
+
+# ✅ 8. ADABOOST (Short + Output)
+
+```python
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import accuracy_score
+
+data = load_iris()
+X = data.data
+y = data.target
+
+x_train,x_test,y_train,y_test = train_test_split(X,y,test_size=0.3)
+
+model = AdaBoostClassifier(n_estimators=50)
+model.fit(x_train,y_train)
+
+y_pred = model.predict(x_test)
+
+print("Accuracy:", accuracy_score(y_test,y_pred))
+```
+
+---
+
+# ✅ 9. K-MEANS (Simple + Graph)
+
+```python
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.cluster import KMeans
+
+data = load_iris()
+X = data.data[:,:2]
+
+model = KMeans(n_clusters=3)
+model.fit(X)
+
+labels = model.labels_
+centers = model.cluster_centers_
+
+plt.scatter(X[:,0],X[:,1],c=labels)
+plt.scatter(centers[:,0],centers[:,1],marker='*',s=200)
+plt.title("K-Means")
+plt.show()
+```
